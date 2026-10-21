@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "title": "SYNTHETIC minimal two-version example — insufficient for uncertainty",
+  "synthetic": true,
+  "calendar": {
+    "frequency_seconds": 86400,
+    "periods_per_year": null,
+    "timestamps": [
+      "2025-01-01T00:00:00Z",
+      "2025-01-02T00:00:00Z",
+      "2025-01-03T00:00:00Z",
+      "2025-01-04T00:00:00Z",
+      "2025-01-05T00:00:00Z",
+      "2025-01-06T00:00:00Z",
+      "2025-01-07T00:00:00Z",
+      "2025-01-08T00:00:00Z"
+    ],
+    "notes": "Synthetic daily 24/7 calendar. Every listed timestamp ends one prior daily period; no market holidays."
+  },
+  "cash_return_per_period": 0.0,
+  "search_trials": null,
+  "series": [
+    {
+      "id": "agent-v1",
+      "agent_id": "demo-agent",
+      "version": "v1",
+      "source_type": "backtest",
+      "frequency_seconds": 86400,
+      "unit": "decimal",
+      "currency": "USD",
+      "return_basis": "gross",
+      "costs": {
+        "included": [
+          "synthetic_fee",
+          "synthetic_slippage"
+        ],
+        "excluded": [
+          "tax",
+          "infrastructure"
+        ],
+        "notes": "Synthetic fixed cost per period, measured against start-of-period equity. No market or execution calibration."
+      },
+      "observations": [
+        {
+          "timestamp": "2025-01-01T00:00:00Z",
+          "return": -0.004669626331,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-02T00:00:00Z",
+          "return": -0.002952056051,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-03T00:00:00Z",
+          "return": -0.005340645359,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-04T00:00:00Z",
+          "return": 0.004181122412,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-05T00:00:00Z",
+          "return": 0.000865733863,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-06T00:00:00Z",
+          "return": 0.001336086999,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-07T00:00:00Z",
+          "return": 0.000812565096,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-08T00:00:00Z",
+          "return": 0.013108993769,
+          "cost": 0.0002
+        }
+      ]
+    },
+    {
+      "id": "agent-v2",
+      "agent_id": "demo-agent",
+      "version": "v2",
+      "source_type": "backtest",
+      "frequency_seconds": 86400,
+      "unit": "decimal",
+      "currency": "USD",
+      "return_basis": "gross",
+      "costs": {
+        "included": [
+          "synthetic_fee",
+          "synthetic_slippage"
+        ],
+        "excluded": [
+          "tax",
+          "infrastructure"
+        ],
+        "notes": "Synthetic fixed cost per period, measured against start-of-period equity. No market or execution calibration."
+      },
+      "observations": [
+        {
+          "timestamp": "2025-01-01T00:00:00Z",
+          "return": 0.003669265051,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-02T00:00:00Z",
+          "return": 0.00045772259,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-03T00:00:00Z",
+          "return": 0.00072174398,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-04T00:00:00Z",
+          "return": 0.001998888924,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-05T00:00:00Z",
+          "return": 0.001097324142,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-06T00:00:00Z",
+          "return": -0.002575392257,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-07T00:00:00Z",
+          "return": 0.001976994322,
+          "cost": 0.0002
+        },
+        {
+          "timestamp": "2025-01-08T00:00:00Z",
+          "return": -0.010213022029,
+          "cost": 0.0002
+        }
+      ]
+    }
+  ],
+  "comparison": {
+    "old": "agent-v1",
+    "new": "agent-v2"
+  }
+}
