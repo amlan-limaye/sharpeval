@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sharpeval"
+version = "0.2.0"
+description = "Local version and fixed-portfolio comparisons for trading-agent return histories"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {file = "LICENSE"}
+dependencies = []
+
+[project.scripts]
+sharpeval = "sharpeval.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["sharpeval*"]
