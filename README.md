@@ -10,35 +10,61 @@ The output separates performance, risk, exposure, uncertainty and portfolio cont
 
 The runtime uses only Python's standard library. No AI, subscriptions, network calls, brokerage integrations, credentials or market-data downloads are required. All included data are reproducible **synthetic teaching fixtures**, not market observations or evidence of real-world alpha.
 
-## Quickstart — no installation or downloads
+## Install and run
 
-From this directory, with an existing Python 3.11+ interpreter (tested with Python 3.13.7):
+Use an existing Python **3.11 or newer** interpreter. Clone this repository or
+extract a source release, then run from its root:
 
 ```sh
-python3.13 -m venv --without-pip .venv
-.venv/bin/python -m sharpeval validate examples/complementary.json
-.venv/bin/python -m sharpeval compare examples/complementary.json \
+git clone https://github.com/amlan-limaye/sharpeval.git
+cd sharpeval
+python3 -m venv .venv
+.venv/bin/python -m pip install .
+.venv/bin/sharpeval --version
+.venv/bin/sharpeval validate examples/complementary.json
+.venv/bin/sharpeval compare examples/complementary.json \
   --output output/demo --block-length 8 --resamples 1000 --seed 42
-.venv/bin/python -m unittest discover -s tests -v
 ```
 
-For the **v0.2 repeated-run and selection diagnostics**:
+If you extracted a release, skip the clone and enter the extracted directory.
+Substitute your supported interpreter for `python3`. On Windows use
+`.venv\Scripts\python.exe` and `.venv\Scripts\sharpeval.exe`. No environment is
+bundled, and no shell activation or global package changes are needed. Installation
+may download the declared setuptools build backend; the installed runtime has no
+third-party dependencies. The wheel and source distribution are checked with a
+fresh install; examples and docs are included in the source distribution.
+
+For an **offline run without installation**, use `python3 -m sharpeval` from the
+source directory in place of `.venv/bin/sharpeval`. A virtual environment is
+optional for this route; no build backend, package installation or downloads are
+needed. For example:
 
 ```sh
-.venv/bin/python -m sharpeval validate examples/v02-repeated.json
-.venv/bin/python -m sharpeval compare examples/v02-repeated.json \
+python3 -m sharpeval validate examples/minimal.json
+python3 -m sharpeval compare examples/minimal.json \
+  --output output/minimal --resamples 200 --seed 42
+```
+
+Read `output/demo/report.html` locally and use `output/demo/report.json` for
+programmatic access. The HTML has no JavaScript, remote assets or telemetry.
+Use `--force` to repeat an output path. Invalid inputs exit 2 with a reason;
+a completed report with insufficient evidence exits 0 and carries explicit
+statuses. Check those statuses before interpreting numbers.
+
+For repeated-run and selection diagnostics:
+
+```sh
+.venv/bin/sharpeval validate examples/v02-repeated.json
+.venv/bin/sharpeval compare examples/v02-repeated.json \
   --output output/v02-repeated --block-length 6 --resamples 1000 --seed 42
-.venv/bin/python -m sharpeval compare examples/v02-lucky-search.json \
+.venv/bin/sharpeval compare examples/v02-lucky-search.json \
   --output output/v02-lucky-search --block-length 6 --resamples 1000 --seed 42
 ```
 
-The first example declares two market windows and three paired execution seeds. The second deliberately selects the luckiest of 100 synthetic zero-mean strategies. `examples/v02-missing-runs.json`, `v02-overlap.json`, `v02-serial.json` and `v02-nonnormal.json` exercise incomplete coverage, shared periods, serial dependence and skewed returns. All are synthetic implementation checks. Add `--force` when repeating an already generated report path.
-
-The isolated `.venv` is already present in the delivered local workspace. You can skip its creation there. No shell activation or global interpreter/package changes are needed. Substitute your existing supported interpreter for `python3.13` on another machine; on Windows the environment interpreter is `.venv\Scripts\python.exe`.
-
-Open `output/demo/report.html` directly in a browser. It is a standalone local file, with no JavaScript, remote assets or telemetry. Its companion `output/demo/report.json` is structured evidence for downstream tools. Re-running an output path requires `--force`; the input is never intentionally overwritten. CLI errors exit with code 2 and a reason; a completed report with insufficient evidence exits 0 and carries explicit statuses.
-
-You can also run directly with `python3.13 -m sharpeval` from this directory, without a virtual environment. A conventional `pyproject.toml` and `sharpeval` console entry point are provided for packaging. Optional installation into a separately managed environment with pip uses `python -m pip install .`; its setuptools build backend is a build dependency, not a runtime dependency. Packaging via pip was not needed or exercised for this local delivery. Nothing has been published; the local name selection is not a claim of package, domain or trademark availability.
+The first declares two market windows and three paired execution seeds. The
+second deliberately selects the luckiest of 100 synthetic zero-mean strategies.
+Other `v02-*.json` examples exercise missing runs, overlapping windows, serial
+dependence and nonnormal returns. All are synthetic implementation checks.
 
 ## Try the four baseline cases
 
@@ -56,6 +82,21 @@ You can also run directly with `python3.13 -m sharpeval` from this directory, wi
 These scenarios demonstrate leveraged benchmark exposure, a single lucky shock, duplicated agents and constructed complementary streams. Their outcomes are controlled properties of the generator. Passing these tests validates specific implementation behavior, not a strategy's forecasting skill.
 
 ## Import your own records
+
+Start with a flat CSV export and a small metadata file that declares your
+identities, costs and expected calendar:
+
+```sh
+.venv/bin/sharpeval import-csv examples/csv/returns.csv \
+  --metadata examples/csv/metadata.json --out output/csv-input.json
+.venv/bin/sharpeval compare output/csv-input.json \
+  --output output/csv-report --block-length 4 --resamples 200 --seed 42
+```
+
+The [CSV walkthrough](docs/csv-import.md) explains how to adapt these files,
+interpret row/field errors and verify the example's arithmetic. This synthetic
+example has a +7.5 bp/period mean change while both versions have negative mean
+net returns. It demonstrates the workflow, not trading edge.
 
 Use schema 1 in [the original input contract](docs/input-format.md) for a single pair. `examples/minimal.json` is a compact example; richer examples add a benchmark and existing portfolio. Use [schema 2 and migration notes](docs/schema-v02.md) for explicit runs, seeds, windows and optional selection inputs. No seed identities or search histories are inferred from old files.
 
@@ -79,7 +120,7 @@ interval = result["uncertainty"]["primary"]["contrasts"]["new_minus_old"]["mean_
 html = render_html(result)
 ```
 
-`analyze` validates the document and returns ordinary JSON-compatible objects. It performs no I/O, uses a local random generator and does not modify global random state. Identical inputs/settings on the same supported runtime produce identical report bytes; each report records a canonical input hash, engine version, Python version and resampling settings. Fixture randomness and bootstrap randomness use separate explicit seeds.
+`analyze` validates the document and returns ordinary JSON-compatible objects. It performs no I/O, uses a local random generator and does not modify global random state. Identical inputs/settings on the same supported runtime produce identical report bytes; each report records a canonical input hash, calculation-profile version, Python version and resampling settings. Fixture randomness and bootstrap randomness use separate explicit seeds.
 
 For schema 2, the same API returns `result["runs"]`, `result["pairs"]`, `result["windows"]`, `result["coverage"]` and `result["selection"]`. Each complete window's conditional mean-execution comparison is under `result["windows"][i]["aggregate"]["comparison"]`. Unavailable aggregates contain `comparison: null` and reasons; check statuses before reading numbers.
 
@@ -97,7 +138,7 @@ For schema 2, the same API returns `result["runs"]`, `result["pairs"]`, `result[
 
 Read the [original methodology](docs/methodology.md) and [v0.2 methodology and limits](docs/methodology-v02.md). PSR/DSR values are conditional approximate normal-tail areas, **not probabilities that an agent is truly skilled**, future-profit odds, or a paired test of version improvement. They do not correct the bootstrap intervals or all forms of selection bias. Input provenance, search completeness, independence and stationarity are not independently established by this tool.
 
-Schema 1 retains the exact v0.1 compatibility calculation and report, including `selection_adjustment.status="not_implemented"` and its calculation-profile version `0.1.0`. The installed package/CLI is `0.2.0`; new features require schema 2. This preserves prior results instead of silently assigning new statistical meaning to them.
+Schema 1 retains the exact v0.1 compatibility calculation and report, including `selection_adjustment.status="not_implemented"` and its calculation-profile version `0.1.0`. The schema-2 report retains calculation-profile version `0.2.0`. The installed package/CLI is `0.2.1`; the CSV importer writes schema 1 and repeated-run/selection diagnostics require schema 2. This preserves prior statistical results. Record `sharpeval --version` alongside report files when tracking the package version.
 
 Excluded: execution, market downloads, strategy search, calendar inference, causal attribution, varying cash rates, currency conversion, short/leverage portfolio weights, recapitalization, cross-window inference, seed-level confidence intervals, and serial-correlation-adjusted PSR/DSR. There are no prop challenges, profit targets, funding rules or qualification stages.
 
@@ -114,6 +155,6 @@ This implementation is independent Python code; no SharpeBench source, market da
 .venv/bin/python -m compileall -q sharpeval tests
 ```
 
-Tests include hand-calculated wealth/variance/drawdown/weights, an independent bootstrap percentile oracle, published DSR examples and an independent normal-density quadrature oracle, duplicate seeds, overlapping windows, missing losers, unknown trial inputs, correlated and nonnormal streams, cost accounting, bankruptcy, strict integrity, and end-to-end CLI/report reproducibility. See [v0.2 validation evidence](docs/validation-v02.md) and the [preserved v0.1 record](docs/validation.md). Browser rendering was not verified; HTML structure and numeric content were checked locally.
+Tests include hand-calculated wealth/variance/drawdown/weights, an independent bootstrap percentile oracle, published DSR examples and an independent normal-density quadrature oracle, duplicate seeds, overlapping windows, missing losers, unknown trial inputs, correlated and nonnormal streams, cost accounting, bankruptcy, strict integrity, and end-to-end CLI/report reproducibility. See [v0.2 validation evidence](docs/validation-v02.md) and the [preserved v0.1 record](docs/validation.md). The CSV workflow adds hand-calculated gross/net examples, missing-session and malformed-input cases, overwrite protection and deterministic CLI checks. See [the changelog](CHANGELOG.md). Browser rendering was not verified; HTML structure and numeric content were checked locally.
 
 The next useful step is a small predeclared held-out evaluation: freeze two agent versions, the cost model, benchmark, weights, calendar and bootstrap settings before collecting fresh data. Record all attempted versions and separate execution runs. More statistics cannot substitute for better experimental records.

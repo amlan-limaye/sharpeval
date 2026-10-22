@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sharpeval"
-version = "0.2.0"
+version = "0.2.1"
 description = "Local version and fixed-portfolio comparisons for trading-agent return histories"
 readme = "README.md"
 requires-python = ">=3.11"
