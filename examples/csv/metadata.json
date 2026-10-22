@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "title": "SYNTHETIC CSV example: two costed versions, 24 daily sessions",
+  "synthetic": true,
+  "calendar": {
+    "frequency_seconds": 86400,
+    "periods_per_year": null,
+    "timestamps": [
+      "2025-01-01T00:00:00Z",
+      "2025-01-02T00:00:00Z",
+      "2025-01-03T00:00:00Z",
+      "2025-01-04T00:00:00Z",
+      "2025-01-05T00:00:00Z",
+      "2025-01-06T00:00:00Z",
+      "2025-01-07T00:00:00Z",
+      "2025-01-08T00:00:00Z",
+      "2025-01-09T00:00:00Z",
+      "2025-01-10T00:00:00Z",
+      "2025-01-11T00:00:00Z",
+      "2025-01-12T00:00:00Z",
+      "2025-01-13T00:00:00Z",
+      "2025-01-14T00:00:00Z",
+      "2025-01-15T00:00:00Z",
+      "2025-01-16T00:00:00Z",
+      "2025-01-17T00:00:00Z",
+      "2025-01-18T00:00:00Z",
+      "2025-01-19T00:00:00Z",
+      "2025-01-20T00:00:00Z",
+      "2025-01-21T00:00:00Z",
+      "2025-01-22T00:00:00Z",
+      "2025-01-23T00:00:00Z",
+      "2025-01-24T00:00:00Z"
+    ],
+    "notes": "Synthetic 24/7 daily period ends. The expected calendar is declared independently of observations."
+  },
+  "cash_return_per_period": 0,
+  "series": [
+    {
+      "id": "agent-v1",
+      "agent_id": "csv-example-agent",
+      "version": "v1-frozen",
+      "source_type": "backtest",
+      "frequency_seconds": 86400,
+      "unit": "decimal",
+      "currency": "USD",
+      "return_basis": "gross",
+      "costs": {
+        "included": [
+          "synthetic_fee"
+        ],
+        "excluded": [],
+        "notes": "Synthetic fee is 0.001 of starting equity each period. This is an arithmetic fixture, not a calibrated execution model."
+      }
+    },
+    {
+      "id": "agent-v2",
+      "agent_id": "csv-example-agent",
+      "version": "v2-frozen",
+      "source_type": "backtest",
+      "frequency_seconds": 86400,
+      "unit": "decimal",
+      "currency": "USD",
+      "return_basis": "gross",
+      "costs": {
+        "included": [
+          "synthetic_fee"
+        ],
+        "excluded": [],
+        "notes": "Synthetic fee is 0.001 of starting equity each period. This is an arithmetic fixture, not a calibrated execution model."
+      }
+    }
+  ],
+  "comparison": {
+    "old": "agent-v1",
+    "new": "agent-v2"
+  },
+  "search_trials": null
+}
