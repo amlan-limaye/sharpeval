@@ -2,8 +2,9 @@
 
 `import-csv` turns a flat export into a portable schema-1 JSON input, validates it,
 and refuses to write output on invalid data. It supports a single old/new version
-pair with optional benchmark and fixed-portfolio histories. Repeated runs and
-selection diagnostics still require explicit [schema-2 JSON](schema-v02.md).
+pair with optional benchmark and fixed-portfolio histories. For repeated runs,
+use the [schema-2 CSV walkthrough](csv-experiments.md): run/window/seed/version
+identities and search metadata must be explicitly declared.
 
 ## Run the complete example
 

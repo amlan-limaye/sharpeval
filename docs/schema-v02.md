@@ -14,6 +14,10 @@ Use [`examples/v02-repeated.json`](../examples/v02-repeated.json) as the complet
 
 Fixture seeds reproduce generated data; `compare --seed` independently reproduces the temporal resampling. No attempt to execute an agent is made.
 
+For flat per-run exports, use the [schema-2 CSV route](csv-experiments.md). It
+requires explicit run/window/seed/version identities and preserves the metadata's
+statuses, calendars and search specification; it does not migrate or infer them.
+
 ## Required top-level fields
 
 | Field | Contract |
@@ -117,6 +121,6 @@ The supplied PSR comparison bar can be any supported finite per-period ratio in 
 
 Schema-2 JSON separates `coverage`, `runs`, `pairs`, `windows`, `aggregate`, `selection`, `analysis_settings`, `warnings` and a canonical input hash. `windows[i].execution_dispersion` is descriptive. A complete window's `aggregate.comparison` contains the unchanged core net/risk/portfolio/block calculation under reserved stream IDs `run-old`/`run-new`; the nested legacy selection field is removed. `selection.targets` contains only requested actual runs. Selection values have `status: conditional` or `unavailable`, never a skill verdict. Null values are not zero. HTML uses the same JSON results and embeds no scripts or remote assets.
 
-Old input files and commands remain valid. The schema-1 calculation profile deliberately reports `tool.version: 0.1.0`, including its original selection-not-implemented output and rendering; `sharpeval --version` reports package `0.2.0`. Tests compare frozen schema-1 JSON/HTML hashes. Existing v0.1 generated files and source ZIP remain separate and unchanged.
+Old input files and commands remain valid. The schema-1 calculation profile deliberately reports `tool.version: 0.1.0`, including its original selection-not-implemented output and rendering; schema 2 retains calculation-profile version `0.2.0`. `sharpeval --version` reports the installed package version (currently `0.3.0`). Tests compare frozen schema-1 JSON/HTML hashes. Prior generated files and releases remain separate and unchanged.
 
 There is no automatic migration command because source files cannot reveal real seed identities, failed attempts, a planned run matrix or search history. To migrate deliberately: declare the actual experiment protocol, copy the explicit calendar into a named window, copy each candidate history's basis/costs/observations into the corresponding run, retain all missing/failed executions, and move benchmark/portfolio histories into that window's references. Add selection specifications only when their required evidence is known; otherwise leave them out or explicitly unknown. Changing only `schema_version` is not a valid migration.
