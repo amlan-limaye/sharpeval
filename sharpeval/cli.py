@@ -9,6 +9,7 @@ import tempfile
 
 from . import __version__
 from .api import analyze, validate
+from .csv_import import import_csv
 from .experiment_fixtures import EXPERIMENT_SCENARIOS, make_experiment_fixture
 from .fixtures import SCENARIOS, make_fixture
 from .report import render_html
@@ -55,6 +56,11 @@ def build_parser():
     check = commands.add_parser("validate", help="validate the schema, costs, chronology and alignment")
     check.add_argument("input", type=Path)
     check.add_argument("--alignment", choices=("strict", "intersection"), default="strict")
+    importer = commands.add_parser("import-csv", help="validate CSV observations plus explicit metadata and write schema-1 JSON")
+    importer.add_argument("input", type=Path, help="UTF-8 CSV with series_id,timestamp,return,cost and optional annotation")
+    importer.add_argument("--metadata", type=Path, required=True, help="schema-1 JSON with observations omitted; calendar remains explicit")
+    importer.add_argument("--out", type=Path, required=True)
+    importer.add_argument("--force", action="store_true")
     compare = commands.add_parser("compare", help="write report.json and a self-contained report.html")
     compare.add_argument("input", type=Path)
     compare.add_argument("--output", type=Path, required=True)
@@ -74,6 +80,20 @@ def main(argv=None):
             document = (make_fixture if args.command == "fixture" else make_experiment_fixture)(args.scenario, args.periods, args.seed)
             write_files({args.out: json.dumps(document, indent=2, ensure_ascii=False, allow_nan=False) + "\n"}, args.force)
             print(f"SYNTHETIC fixture written: {args.out}")
+            return 0
+        if args.command == "import-csv":
+            if args.out.resolve() in (args.input.resolve(), args.metadata.resolve()):
+                raise InputError("output would overwrite an input (CSV or metadata)")
+            document = import_csv(args.input, load_input(args.metadata))
+            content = json.dumps(document, indent=2, ensure_ascii=False, allow_nan=False) + "\n"
+            if len(content.encode("utf-8")) > 25_000_000:
+                raise InputError("converted JSON exceeds the 25 MB input limit; reduce the input size")
+            write_files({args.out: content}, args.force)
+            count = sum(len(history["observations"]) for history in document["series"])
+            print(f"Validated {count} CSV observations in {len(document['series'])} histories; strict calendar alignment.")
+            print(f"JSON: {args.out.resolve()}")
+            if document["synthetic"]:
+                print("SYNTHETIC: this example is not evidence of real-world alpha.")
             return 0
         document = load_input(args.input)
         if args.command == "validate":

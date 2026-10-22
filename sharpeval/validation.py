@@ -72,7 +72,9 @@ def load_input(path):
     try:
         return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=unique_json,
                           parse_constant=lambda x: (_ for _ in ()).throw(InputError(f"nonfinite JSON number: {x}")))
-    except (json.JSONDecodeError, UnicodeError, RecursionError) as exc:
+    except InputError:
+        raise
+    except (ValueError, UnicodeError, RecursionError) as exc:
         raise InputError(f"invalid JSON: {exc}") from None
 
 
@@ -255,8 +257,10 @@ def align(data, mode):
     if mode == "strict":
         for sid in selected:
             if data.histories[sid].timestamps != data.calendar:
-                missing = set(data.calendar) - set(data.histories[sid].timestamps)
-                raise InputError(f"{sid}: strict alignment has {len(missing)} missing periods; supply them or explicitly use intersection for trimmed edges")
+                observed = set(data.histories[sid].timestamps)
+                missing = [t for t in data.calendar if t not in observed]
+                preview = ", ".join(missing[:3]) + (", ..." if len(missing) > 3 else "")
+                raise InputError(f"{sid}: strict alignment has {len(missing)} missing periods ({preview}); supply them or explicitly use intersection for trimmed edges")
         kept = data.calendar
     else:
         common = set(data.calendar)
