@@ -56,9 +56,9 @@ def build_parser():
     check = commands.add_parser("validate", help="validate the schema, costs, chronology and alignment")
     check.add_argument("input", type=Path)
     check.add_argument("--alignment", choices=("strict", "intersection"), default="strict")
-    importer = commands.add_parser("import-csv", help="validate CSV observations plus explicit metadata and write schema-1 JSON")
-    importer.add_argument("input", type=Path, help="UTF-8 CSV with series_id,timestamp,return,cost and optional annotation")
-    importer.add_argument("--metadata", type=Path, required=True, help="schema-1 JSON with observations omitted; calendar remains explicit")
+    importer = commands.add_parser("import-csv", help="validate CSV observations plus explicit schema-1 or schema-2 metadata")
+    importer.add_argument("input", type=Path, help="UTF-8 CSV with series identity (schema 1) or run/window/seed/version identities (schema 2), timestamp,return,cost")
+    importer.add_argument("--metadata", type=Path, required=True, help="JSON with candidate observations omitted; calendars, statuses and search metadata remain explicit")
     importer.add_argument("--out", type=Path, required=True)
     importer.add_argument("--force", action="store_true")
     compare = commands.add_parser("compare", help="write report.json and a self-contained report.html")
@@ -89,8 +89,14 @@ def main(argv=None):
             if len(content.encode("utf-8")) > 25_000_000:
                 raise InputError("converted JSON exceeds the 25 MB input limit; reduce the input size")
             write_files({args.out: content}, args.force)
-            count = sum(len(history["observations"]) for history in document["series"])
-            print(f"Validated {count} CSV observations in {len(document['series'])} histories; strict calendar alignment.")
+            if document["schema_version"] == 2:
+                count = sum(len(run["history"]["observations"]) for run in document["runs"] if run["status"] == "completed")
+                planned = 2 * len(document["seed_ids"]) * len(document["windows"])
+                print(f"Validated {count} CSV observations; {len(document['runs'])} explicit records / {planned} planned runs.")
+                print("Failed/missing records and search metadata preserved; absent cells remain missing. Strict window alignment.")
+            else:
+                count = sum(len(history["observations"]) for history in document["series"])
+                print(f"Validated {count} CSV observations in {len(document['series'])} histories; strict calendar alignment.")
             print(f"JSON: {args.out.resolve()}")
             if document["synthetic"]:
                 print("SYNTHETIC: this example is not evidence of real-world alpha.")

@@ -1,4 +1,4 @@
-"""Import explicit long-form CSV observations into the existing schema-1 contract."""
+"""Import explicit long-form CSV observations into the existing JSON contracts."""
 
 import copy
 import csv
@@ -25,13 +25,19 @@ def _number(value, label, *, nullable=False):
 
 
 def import_csv(path, metadata):
-    """Return a fully validated, strictly aligned schema-1 document; write nothing.
+    """Return a fully validated, strictly aligned document; write nothing.
 
     Metadata is a schema-1 document with observations omitted from every series.
     It supplies the expected calendar independently of the CSV. Rows may interleave
     histories but must already be chronological within each history. No sorting,
     filling, unit conversion, calendar inference or return/cost deduction occurs.
+    Schema 2 uses explicit experiment/run metadata and repeated identities in CSV.
     """
+    if isinstance(metadata, dict) and metadata.get("schema_version") == 2:
+        from .csv_experiments import import_experiment_csv
+        if "series" in metadata:
+            raise InputError("metadata.schema_version=2 requires explicit experiment metadata; changing the version alone cannot migrate run identities")
+        return import_experiment_csv(path, metadata)
     object_fields(metadata, {"schema_version", "title", "synthetic", "calendar",
                              "cash_return_per_period", "series", "comparison"},
                   {"benchmark", "portfolio", "search_trials"}, path="metadata")

@@ -123,8 +123,11 @@ def validate_experiment(document):
         window = by_window[run["window_id"]]
         old_payload = payload if run["version"] == versions["old"] else _empty_payload(window)
         new_payload = payload if run["version"] == versions["new"] else _empty_payload(window)
-        checked = validate_v1(window_bundle(document, window, old_payload, new_payload))
-        align(checked, "strict")
+        try:
+            checked = validate_v1(window_bundle(document, window, old_payload, new_payload))
+            align(checked, "strict")
+        except InputError as exc:
+            raise InputError(f"{rid}.history: {exc}") from None
         validated_histories[rid] = checked.histories[OLD_ID if run["version"] == versions["old"] else NEW_ID]
         observations += len(payload["observations"])
     if observations > 100_000:
