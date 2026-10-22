@@ -98,6 +98,23 @@ interpret row/field errors and verify the example's arithmetic. This synthetic
 example has a +7.5 bp/period mean change while both versions have negative mean
 net returns. It demonstrates the workflow, not trading edge.
 
+For repeated experiments, the same command accepts [schema-2 CSV exports](docs/csv-experiments.md)
+with explicit run/window/seed/version identities and unchanged search metadata:
+
+```sh
+.venv/bin/sharpeval import-csv examples/repeated-csv/returns.csv \
+  --metadata examples/repeated-csv/metadata.json --out output/repeated-input.json
+.venv/bin/sharpeval compare output/repeated-input.json \
+  --output output/repeated-report --block-length 6 --resamples 1000 --seed 42
+```
+
+The [retrospective synthetic case study](docs/case-study.md) retains a 40-variant
+search ledger and three paired executions in each of two windows. Its apparent
+gross improvement reverses after declared costs; uncertainty spans zero and DSR
+is unavailable because the independent trial count is unknown. A companion export
+shows why failed/missing runs withhold an affected window's aggregate. These are
+original MIT-licensed teaching data, not market observations or adoption evidence.
+
 Use schema 1 in [the original input contract](docs/input-format.md) for a single pair. `examples/minimal.json` is a compact example; richer examples add a benchmark and existing portfolio. Use [schema 2 and migration notes](docs/schema-v02.md) for explicit runs, seeds, windows and optional selection inputs. No seed identities or search histories are inferred from old files.
 
 Required information includes explicit UTC period ends, an expected session calendar, frequency, decimal simple equity-return units, valuation currency, agent/version identities, live/paper/backtest provenance, return basis and cost coverage. Costs are fractions of equity at the start of each period:
@@ -138,7 +155,7 @@ For schema 2, the same API returns `result["runs"]`, `result["pairs"]`, `result[
 
 Read the [original methodology](docs/methodology.md) and [v0.2 methodology and limits](docs/methodology-v02.md). PSR/DSR values are conditional approximate normal-tail areas, **not probabilities that an agent is truly skilled**, future-profit odds, or a paired test of version improvement. They do not correct the bootstrap intervals or all forms of selection bias. Input provenance, search completeness, independence and stationarity are not independently established by this tool.
 
-Schema 1 retains the exact v0.1 compatibility calculation and report, including `selection_adjustment.status="not_implemented"` and its calculation-profile version `0.1.0`. The schema-2 report retains calculation-profile version `0.2.0`. The installed package/CLI is `0.2.1`; the CSV importer writes schema 1 and repeated-run/selection diagnostics require schema 2. This preserves prior statistical results. Record `sharpeval --version` alongside report files when tracking the package version.
+Schema 1 retains the exact v0.1 compatibility calculation and report, including `selection_adjustment.status="not_implemented"` and its calculation-profile version `0.1.0`. The schema-2 report retains calculation-profile version `0.2.0`. The installed package/CLI is `0.3.0`; the CSV importer supports both schemas without changing their statistical interpretation. Record `sharpeval --version` alongside report files when tracking the package version.
 
 Excluded: execution, market downloads, strategy search, calendar inference, causal attribution, varying cash rates, currency conversion, short/leverage portfolio weights, recapitalization, cross-window inference, seed-level confidence intervals, and serial-correlation-adjusted PSR/DSR. There are no prop challenges, profit targets, funding rules or qualification stages.
 
@@ -154,6 +171,11 @@ This implementation is independent Python code; no SharpeBench source, market da
 .venv/bin/python -m unittest discover -s tests -v
 .venv/bin/python -m compileall -q sharpeval tests
 ```
+
+The [read-only CI workflow and local release check](docs/ci.md) run tests, build
+both distributions, and exercise clean installs and offline examples outside the
+checkout. The hosted matrix targets Linux/Python 3.11 and 3.13 plus Windows/Python
+3.13. Check the actual GitHub run before claiming that matrix passed.
 
 Tests include hand-calculated wealth/variance/drawdown/weights, an independent bootstrap percentile oracle, published DSR examples and an independent normal-density quadrature oracle, duplicate seeds, overlapping windows, missing losers, unknown trial inputs, correlated and nonnormal streams, cost accounting, bankruptcy, strict integrity, and end-to-end CLI/report reproducibility. See [v0.2 validation evidence](docs/validation-v02.md) and the [preserved v0.1 record](docs/validation.md). The CSV workflow adds hand-calculated gross/net examples, missing-session and malformed-input cases, overwrite protection and deterministic CLI checks. See [the changelog](CHANGELOG.md). Browser rendering was not verified; HTML structure and numeric content were checked locally.
 
