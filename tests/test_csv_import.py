@@ -25,7 +25,7 @@ class CSVImportTests(unittest.TestCase):
         self.path = Path(self.temp.name) / "returns.csv"
 
     def read(self, content=None, metadata=None):
-        self.path.write_text(self.csv if content is None else content, encoding="utf-8")
+        self.path.write_text(self.csv if content is None else content, encoding="utf-8", newline="")
         return import_csv(self.path, self.metadata if metadata is None else metadata)
 
     def test_hand_calculated_costed_example_and_no_metadata_mutation(self):

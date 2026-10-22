@@ -87,7 +87,7 @@ class ExperimentCSVTests(unittest.TestCase):
 
     def read(self):
         path = self.root / "returns.csv"
-        path.write_text(csv_text(self.rows), encoding="utf-8")
+        path.write_text(csv_text(self.rows), encoding="utf-8", newline="")
         return import_csv(path, self.metadata)
 
     def test_exact_equivalence_to_hand_built_document_and_reports(self):

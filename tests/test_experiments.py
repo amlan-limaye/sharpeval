@@ -329,7 +329,8 @@ class FrozenSchemaOneTests(unittest.TestCase):
         # Python version is diagnostic metadata; compare at the frozen delivery runtime.
         report["tool"]["python"] = "3.13.7"
         encoded = (json.dumps(report, indent=2, ensure_ascii=False, allow_nan=False) + "\n").encode()
-        self.assertEqual(hashlib.sha256(encoded).hexdigest(), "3b6e704d54f3e7d9f0b331f1feb769e128665bbcf7f4160412edf1619132b29a")
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), "3b6e704d54f3e7d9f0b331f1feb769e128665bbcf7f4160412edf1619132b29a",
+                         "FROZEN_REPORT_DIAGNOSTIC=" + json.dumps(report, ensure_ascii=False, allow_nan=False, separators=(",", ":")))
         self.assertEqual(hashlib.sha256(render_html(report).encode()).hexdigest(), "aa2c8c12d894f61ca9080ab6727d8f1a1adf557b31d637807adc75a8a63ed6be")
 
 
