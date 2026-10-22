@@ -70,7 +70,12 @@ class EndToEndTests(unittest.TestCase):
             out.mkdir()
             target = root / "target.txt"
             target.write_text("untouched")
-            (out / "report.html").symlink_to(target)
+            try:
+                (out / "report.html").symlink_to(target)
+            except OSError as exc:
+                if sys.platform == "win32" and getattr(exc, "winerror", None) == 1314:
+                    self.skipTest("Windows runner does not grant symlink creation")
+                raise
             result = self.cli("compare", source, "--output", out, "--force", "--resamples", 200)
             self.assertEqual(result.returncode, 2)
             self.assertEqual(target.read_text(), "untouched")
