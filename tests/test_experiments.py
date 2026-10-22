@@ -6,6 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 import random
+import sys
 import unittest
 
 from sharpeval import InputError, analyze, validate
@@ -329,8 +330,17 @@ class FrozenSchemaOneTests(unittest.TestCase):
         # Python version is diagnostic metadata; compare at the frozen delivery runtime.
         report["tool"]["python"] = "3.13.7"
         encoded = (json.dumps(report, indent=2, ensure_ascii=False, allow_nan=False) + "\n").encode()
-        self.assertEqual(hashlib.sha256(encoded).hexdigest(), "3b6e704d54f3e7d9f0b331f1feb769e128665bbcf7f4160412edf1619132b29a",
-                         "FROZEN_REPORT_DIAGNOSTIC=" + json.dumps(report, ensure_ascii=False, allow_nan=False, separators=(",", ":")))
+        # Observed Windows output differs in seven expm1-derived values by 1-4 ULPs;
+        # all other fields and the rendered HTML bytes are identical. Keep
+        # exact platform fingerprints instead of rounding report values or
+        # changing financial calculations to satisfy a cross-platform hash.
+        # Windows evidence: GitHub Actions run 39774563639, Python 3.13.
+        expected_json_hash = (
+            "da658bd531399b87cf3218e8648719cf5130fa032bc6d3079b7d62b69bf40056"
+            if sys.platform == "win32" else
+            "3b6e704d54f3e7d9f0b331f1feb769e128665bbcf7f4160412edf1619132b29a"
+        )
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), expected_json_hash)
         self.assertEqual(hashlib.sha256(render_html(report).encode()).hexdigest(), "aa2c8c12d894f61ca9080ab6727d8f1a1adf557b31d637807adc75a8a63ed6be")
 
 
