@@ -4,7 +4,7 @@ This contract remains supported without changed results in package v0.2. For rep
 
 One UTF-8 JSON object is the complete portable input. Unknown fields and duplicate object keys are rejected so typos cannot silently change interpretation. There is no executable configuration, external file resolution or network lookup.
 
-Start with [`examples/minimal.json`](../examples/minimal.json) or generate an example using `fixture`. All fields below are required unless explicitly optional.
+Start with [`examples/minimal.json`](../examples/minimal.json), generate an example using `fixture`, or use the [CSV importer](csv-import.md) to validate a flat export with separately declared metadata and calendar. All fields below are required unless explicitly optional.
 
 ## Top-level fields
 
