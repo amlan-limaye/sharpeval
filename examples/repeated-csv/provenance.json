@@ -1,0 +1,22 @@
+{
+  "kind": "original synthetic retrospective construction",
+  "license": "MIT; repository LICENSE applies",
+  "third_party_data": false,
+  "real_agent_execution": false,
+  "prospective_evaluation": false,
+  "generator_seed": 20261022,
+  "periods_per_window": 120,
+  "candidate_variants": 40,
+  "selected_version": "selected-variant-13",
+  "executions": [
+    "execution-a",
+    "execution-b",
+    "execution-c"
+  ],
+  "population_incremental_gross_mean": 0,
+  "baseline_mean_cost_bp": 1.0,
+  "candidate_mean_cost_bp": 9.333333333333334,
+  "construction": "Shared Gaussian market/baseline component; independent zero-mean candidate perturbations; paired execution noise; explicit assumed cost scenarios. No empirical calibration.",
+  "selection": "Maximize development execution-a gross Sharpe across 40 variants. Both windows and the choice are constructed retrospectively.",
+  "limitations": "IID Gaussian time innovations omit market frictions, volatility clustering and regime shifts. Full synthetic search ledger does not establish an independent trial count. No actual adoption or market edge is demonstrated."
+}
