@@ -1,0 +1,707 @@
+{
+  "schema_version": 2,
+  "title": "SYNTHETIC retrospective case: a selected high-turnover change",
+  "synthetic": true,
+  "agent_id": "synthetic-turnover-case",
+  "versions": {
+    "old": "baseline-v1",
+    "new": "selected-variant-13"
+  },
+  "evaluation": {
+    "source_type": "backtest",
+    "frequency_seconds": 86400,
+    "periods_per_year": null,
+    "unit": "decimal",
+    "currency": "USD",
+    "cash_return_per_period": 0,
+    "notes": "Retrospective simulation: choose the best gross Sharpe of 40 candidate variants on development execution-a, then replay that same variant. Shared market paths and paired execution labels; no prospective evaluation or real trading."
+  },
+  "seed_ids": [
+    "execution-a",
+    "execution-b",
+    "execution-c"
+  ],
+  "windows": [
+    {
+      "window_id": "development",
+      "timestamps": [
+        "2024-01-01T00:00:00Z",
+        "2024-01-02T00:00:00Z",
+        "2024-01-03T00:00:00Z",
+        "2024-01-04T00:00:00Z",
+        "2024-01-05T00:00:00Z",
+        "2024-01-06T00:00:00Z",
+        "2024-01-07T00:00:00Z",
+        "2024-01-08T00:00:00Z",
+        "2024-01-09T00:00:00Z",
+        "2024-01-10T00:00:00Z",
+        "2024-01-11T00:00:00Z",
+        "2024-01-12T00:00:00Z",
+        "2024-01-13T00:00:00Z",
+        "2024-01-14T00:00:00Z",
+        "2024-01-15T00:00:00Z",
+        "2024-01-16T00:00:00Z",
+        "2024-01-17T00:00:00Z",
+        "2024-01-18T00:00:00Z",
+        "2024-01-19T00:00:00Z",
+        "2024-01-20T00:00:00Z",
+        "2024-01-21T00:00:00Z",
+        "2024-01-22T00:00:00Z",
+        "2024-01-23T00:00:00Z",
+        "2024-01-24T00:00:00Z",
+        "2024-01-25T00:00:00Z",
+        "2024-01-26T00:00:00Z",
+        "2024-01-27T00:00:00Z",
+        "2024-01-28T00:00:00Z",
+        "2024-01-29T00:00:00Z",
+        "2024-01-30T00:00:00Z",
+        "2024-01-31T00:00:00Z",
+        "2024-02-01T00:00:00Z",
+        "2024-02-02T00:00:00Z",
+        "2024-02-03T00:00:00Z",
+        "2024-02-04T00:00:00Z",
+        "2024-02-05T00:00:00Z",
+        "2024-02-06T00:00:00Z",
+        "2024-02-07T00:00:00Z",
+        "2024-02-08T00:00:00Z",
+        "2024-02-09T00:00:00Z",
+        "2024-02-10T00:00:00Z",
+        "2024-02-11T00:00:00Z",
+        "2024-02-12T00:00:00Z",
+        "2024-02-13T00:00:00Z",
+        "2024-02-14T00:00:00Z",
+        "2024-02-15T00:00:00Z",
+        "2024-02-16T00:00:00Z",
+        "2024-02-17T00:00:00Z",
+        "2024-02-18T00:00:00Z",
+        "2024-02-19T00:00:00Z",
+        "2024-02-20T00:00:00Z",
+        "2024-02-21T00:00:00Z",
+        "2024-02-22T00:00:00Z",
+        "2024-02-23T00:00:00Z",
+        "2024-02-24T00:00:00Z",
+        "2024-02-25T00:00:00Z",
+        "2024-02-26T00:00:00Z",
+        "2024-02-27T00:00:00Z",
+        "2024-02-28T00:00:00Z",
+        "2024-02-29T00:00:00Z",
+        "2024-03-01T00:00:00Z",
+        "2024-03-02T00:00:00Z",
+        "2024-03-03T00:00:00Z",
+        "2024-03-04T00:00:00Z",
+        "2024-03-05T00:00:00Z",
+        "2024-03-06T00:00:00Z",
+        "2024-03-07T00:00:00Z",
+        "2024-03-08T00:00:00Z",
+        "2024-03-09T00:00:00Z",
+        "2024-03-10T00:00:00Z",
+        "2024-03-11T00:00:00Z",
+        "2024-03-12T00:00:00Z",
+        "2024-03-13T00:00:00Z",
+        "2024-03-14T00:00:00Z",
+        "2024-03-15T00:00:00Z",
+        "2024-03-16T00:00:00Z",
+        "2024-03-17T00:00:00Z",
+        "2024-03-18T00:00:00Z",
+        "2024-03-19T00:00:00Z",
+        "2024-03-20T00:00:00Z",
+        "2024-03-21T00:00:00Z",
+        "2024-03-22T00:00:00Z",
+        "2024-03-23T00:00:00Z",
+        "2024-03-24T00:00:00Z",
+        "2024-03-25T00:00:00Z",
+        "2024-03-26T00:00:00Z",
+        "2024-03-27T00:00:00Z",
+        "2024-03-28T00:00:00Z",
+        "2024-03-29T00:00:00Z",
+        "2024-03-30T00:00:00Z",
+        "2024-03-31T00:00:00Z",
+        "2024-04-01T00:00:00Z",
+        "2024-04-02T00:00:00Z",
+        "2024-04-03T00:00:00Z",
+        "2024-04-04T00:00:00Z",
+        "2024-04-05T00:00:00Z",
+        "2024-04-06T00:00:00Z",
+        "2024-04-07T00:00:00Z",
+        "2024-04-08T00:00:00Z",
+        "2024-04-09T00:00:00Z",
+        "2024-04-10T00:00:00Z",
+        "2024-04-11T00:00:00Z",
+        "2024-04-12T00:00:00Z",
+        "2024-04-13T00:00:00Z",
+        "2024-04-14T00:00:00Z",
+        "2024-04-15T00:00:00Z",
+        "2024-04-16T00:00:00Z",
+        "2024-04-17T00:00:00Z",
+        "2024-04-18T00:00:00Z",
+        "2024-04-19T00:00:00Z",
+        "2024-04-20T00:00:00Z",
+        "2024-04-21T00:00:00Z",
+        "2024-04-22T00:00:00Z",
+        "2024-04-23T00:00:00Z",
+        "2024-04-24T00:00:00Z",
+        "2024-04-25T00:00:00Z",
+        "2024-04-26T00:00:00Z",
+        "2024-04-27T00:00:00Z",
+        "2024-04-28T00:00:00Z",
+        "2024-04-29T00:00:00Z"
+      ],
+      "notes": "SYNTHETIC 24/7 daily sessions; independently declared schedule. Both windows are retrospective constructions, not observed market or prospective data."
+    },
+    {
+      "window_id": "audit-replay",
+      "timestamps": [
+        "2024-06-01T00:00:00Z",
+        "2024-06-02T00:00:00Z",
+        "2024-06-03T00:00:00Z",
+        "2024-06-04T00:00:00Z",
+        "2024-06-05T00:00:00Z",
+        "2024-06-06T00:00:00Z",
+        "2024-06-07T00:00:00Z",
+        "2024-06-08T00:00:00Z",
+        "2024-06-09T00:00:00Z",
+        "2024-06-10T00:00:00Z",
+        "2024-06-11T00:00:00Z",
+        "2024-06-12T00:00:00Z",
+        "2024-06-13T00:00:00Z",
+        "2024-06-14T00:00:00Z",
+        "2024-06-15T00:00:00Z",
+        "2024-06-16T00:00:00Z",
+        "2024-06-17T00:00:00Z",
+        "2024-06-18T00:00:00Z",
+        "2024-06-19T00:00:00Z",
+        "2024-06-20T00:00:00Z",
+        "2024-06-21T00:00:00Z",
+        "2024-06-22T00:00:00Z",
+        "2024-06-23T00:00:00Z",
+        "2024-06-24T00:00:00Z",
+        "2024-06-25T00:00:00Z",
+        "2024-06-26T00:00:00Z",
+        "2024-06-27T00:00:00Z",
+        "2024-06-28T00:00:00Z",
+        "2024-06-29T00:00:00Z",
+        "2024-06-30T00:00:00Z",
+        "2024-07-01T00:00:00Z",
+        "2024-07-02T00:00:00Z",
+        "2024-07-03T00:00:00Z",
+        "2024-07-04T00:00:00Z",
+        "2024-07-05T00:00:00Z",
+        "2024-07-06T00:00:00Z",
+        "2024-07-07T00:00:00Z",
+        "2024-07-08T00:00:00Z",
+        "2024-07-09T00:00:00Z",
+        "2024-07-10T00:00:00Z",
+        "2024-07-11T00:00:00Z",
+        "2024-07-12T00:00:00Z",
+        "2024-07-13T00:00:00Z",
+        "2024-07-14T00:00:00Z",
+        "2024-07-15T00:00:00Z",
+        "2024-07-16T00:00:00Z",
+        "2024-07-17T00:00:00Z",
+        "2024-07-18T00:00:00Z",
+        "2024-07-19T00:00:00Z",
+        "2024-07-20T00:00:00Z",
+        "2024-07-21T00:00:00Z",
+        "2024-07-22T00:00:00Z",
+        "2024-07-23T00:00:00Z",
+        "2024-07-24T00:00:00Z",
+        "2024-07-25T00:00:00Z",
+        "2024-07-26T00:00:00Z",
+        "2024-07-27T00:00:00Z",
+        "2024-07-28T00:00:00Z",
+        "2024-07-29T00:00:00Z",
+        "2024-07-30T00:00:00Z",
+        "2024-07-31T00:00:00Z",
+        "2024-08-01T00:00:00Z",
+        "2024-08-02T00:00:00Z",
+        "2024-08-03T00:00:00Z",
+        "2024-08-04T00:00:00Z",
+        "2024-08-05T00:00:00Z",
+        "2024-08-06T00:00:00Z",
+        "2024-08-07T00:00:00Z",
+        "2024-08-08T00:00:00Z",
+        "2024-08-09T00:00:00Z",
+        "2024-08-10T00:00:00Z",
+        "2024-08-11T00:00:00Z",
+        "2024-08-12T00:00:00Z",
+        "2024-08-13T00:00:00Z",
+        "2024-08-14T00:00:00Z",
+        "2024-08-15T00:00:00Z",
+        "2024-08-16T00:00:00Z",
+        "2024-08-17T00:00:00Z",
+        "2024-08-18T00:00:00Z",
+        "2024-08-19T00:00:00Z",
+        "2024-08-20T00:00:00Z",
+        "2024-08-21T00:00:00Z",
+        "2024-08-22T00:00:00Z",
+        "2024-08-23T00:00:00Z",
+        "2024-08-24T00:00:00Z",
+        "2024-08-25T00:00:00Z",
+        "2024-08-26T00:00:00Z",
+        "2024-08-27T00:00:00Z",
+        "2024-08-28T00:00:00Z",
+        "2024-08-29T00:00:00Z",
+        "2024-08-30T00:00:00Z",
+        "2024-08-31T00:00:00Z",
+        "2024-09-01T00:00:00Z",
+        "2024-09-02T00:00:00Z",
+        "2024-09-03T00:00:00Z",
+        "2024-09-04T00:00:00Z",
+        "2024-09-05T00:00:00Z",
+        "2024-09-06T00:00:00Z",
+        "2024-09-07T00:00:00Z",
+        "2024-09-08T00:00:00Z",
+        "2024-09-09T00:00:00Z",
+        "2024-09-10T00:00:00Z",
+        "2024-09-11T00:00:00Z",
+        "2024-09-12T00:00:00Z",
+        "2024-09-13T00:00:00Z",
+        "2024-09-14T00:00:00Z",
+        "2024-09-15T00:00:00Z",
+        "2024-09-16T00:00:00Z",
+        "2024-09-17T00:00:00Z",
+        "2024-09-18T00:00:00Z",
+        "2024-09-19T00:00:00Z",
+        "2024-09-20T00:00:00Z",
+        "2024-09-21T00:00:00Z",
+        "2024-09-22T00:00:00Z",
+        "2024-09-23T00:00:00Z",
+        "2024-09-24T00:00:00Z",
+        "2024-09-25T00:00:00Z",
+        "2024-09-26T00:00:00Z",
+        "2024-09-27T00:00:00Z",
+        "2024-09-28T00:00:00Z"
+      ],
+      "notes": "SYNTHETIC 24/7 daily sessions; independently declared schedule. Both windows are retrospective constructions, not observed market or prospective data."
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "development-execution-a-old",
+      "window_id": "development",
+      "seed_id": "execution-a",
+      "version": "baseline-v1",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    },
+    {
+      "run_id": "development-execution-a-new",
+      "window_id": "development",
+      "seed_id": "execution-a",
+      "version": "selected-variant-13",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    },
+    {
+      "run_id": "development-execution-b-old",
+      "window_id": "development",
+      "seed_id": "execution-b",
+      "version": "baseline-v1",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    },
+    {
+      "run_id": "development-execution-b-new",
+      "window_id": "development",
+      "seed_id": "execution-b",
+      "version": "selected-variant-13",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    },
+    {
+      "run_id": "development-execution-c-old",
+      "window_id": "development",
+      "seed_id": "execution-c",
+      "version": "baseline-v1",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    },
+    {
+      "run_id": "development-execution-c-new",
+      "window_id": "development",
+      "seed_id": "execution-c",
+      "version": "selected-variant-13",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    },
+    {
+      "run_id": "audit-replay-execution-a-old",
+      "window_id": "audit-replay",
+      "seed_id": "execution-a",
+      "version": "baseline-v1",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    },
+    {
+      "run_id": "audit-replay-execution-a-new",
+      "window_id": "audit-replay",
+      "seed_id": "execution-a",
+      "version": "selected-variant-13",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    },
+    {
+      "run_id": "audit-replay-execution-b-old",
+      "window_id": "audit-replay",
+      "seed_id": "execution-b",
+      "version": "baseline-v1",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    },
+    {
+      "run_id": "audit-replay-execution-b-new",
+      "window_id": "audit-replay",
+      "seed_id": "execution-b",
+      "version": "selected-variant-13",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    },
+    {
+      "run_id": "audit-replay-execution-c-old",
+      "window_id": "audit-replay",
+      "seed_id": "execution-c",
+      "version": "baseline-v1",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    },
+    {
+      "run_id": "audit-replay-execution-c-new",
+      "window_id": "audit-replay",
+      "seed_id": "execution-c",
+      "version": "selected-variant-13",
+      "status": "completed",
+      "history": {
+        "return_basis": "gross",
+        "costs": {
+          "included": [
+            "assumed_fee_and_slippage"
+          ],
+          "excluded": [
+            "tax",
+            "infrastructure"
+          ],
+          "notes": "Assumed daily start-equity cost: baseline 0.8–1.2 bp, high-turnover candidate 8–11 bp across execution scenarios. These are teaching assumptions, not measured brokerage costs."
+        }
+      }
+    }
+  ],
+  "selection": [
+    {
+      "target_run_id": "development-execution-a-new",
+      "sharpe_unit": "per_period",
+      "benchmark_sharpe_per_period": 0,
+      "assumptions": {
+        "serial_independence": "assumed",
+        "stationarity": "assumed",
+        "finite_fourth_moment": "assumed",
+        "normal_trial_sharpes": "unknown",
+        "comparable_trial_sharpes": "assumed"
+      },
+      "notes": "The generator uses independent Gaussian time innovations, but selection is retrospective. The candidates share the same baseline component; execution seeds are not independent search trials.",
+      "search": {
+        "observed_trial_count": 40,
+        "effective_independent_trials": null,
+        "completeness": "complete",
+        "dispersion_source": "observed_trial_sharpes",
+        "trial_sharpe_std_per_period": null,
+        "trial_sharpes": [
+          {
+            "trial_id": "variant-00",
+            "sharpe_per_period": -0.17613367676
+          },
+          {
+            "trial_id": "variant-01",
+            "sharpe_per_period": -0.125534340077
+          },
+          {
+            "trial_id": "variant-02",
+            "sharpe_per_period": -0.148941852134
+          },
+          {
+            "trial_id": "variant-03",
+            "sharpe_per_period": -0.198571740255
+          },
+          {
+            "trial_id": "variant-04",
+            "sharpe_per_period": -0.012467808602
+          },
+          {
+            "trial_id": "variant-05",
+            "sharpe_per_period": 0.044185768866
+          },
+          {
+            "trial_id": "variant-06",
+            "sharpe_per_period": -0.050806563991
+          },
+          {
+            "trial_id": "variant-07",
+            "sharpe_per_period": -0.067488951645
+          },
+          {
+            "trial_id": "variant-08",
+            "sharpe_per_period": -0.17825525726
+          },
+          {
+            "trial_id": "variant-09",
+            "sharpe_per_period": -0.088345608973
+          },
+          {
+            "trial_id": "variant-10",
+            "sharpe_per_period": -0.089965046561
+          },
+          {
+            "trial_id": "variant-11",
+            "sharpe_per_period": 0.04222286779
+          },
+          {
+            "trial_id": "variant-12",
+            "sharpe_per_period": -0.074564496966
+          },
+          {
+            "trial_id": "variant-13",
+            "sharpe_per_period": 0.04546497762
+          },
+          {
+            "trial_id": "variant-14",
+            "sharpe_per_period": -0.020468319775
+          },
+          {
+            "trial_id": "variant-15",
+            "sharpe_per_period": -0.057568166117
+          },
+          {
+            "trial_id": "variant-16",
+            "sharpe_per_period": -0.039392717798
+          },
+          {
+            "trial_id": "variant-17",
+            "sharpe_per_period": -0.077464605858
+          },
+          {
+            "trial_id": "variant-18",
+            "sharpe_per_period": -0.139156940201
+          },
+          {
+            "trial_id": "variant-19",
+            "sharpe_per_period": -0.153345413305
+          },
+          {
+            "trial_id": "variant-20",
+            "sharpe_per_period": -0.084162913102
+          },
+          {
+            "trial_id": "variant-21",
+            "sharpe_per_period": -0.095826414911
+          },
+          {
+            "trial_id": "variant-22",
+            "sharpe_per_period": -0.161830967208
+          },
+          {
+            "trial_id": "variant-23",
+            "sharpe_per_period": -0.160090238031
+          },
+          {
+            "trial_id": "variant-24",
+            "sharpe_per_period": -0.026601033753
+          },
+          {
+            "trial_id": "variant-25",
+            "sharpe_per_period": -0.090070677261
+          },
+          {
+            "trial_id": "variant-26",
+            "sharpe_per_period": -0.049883236903
+          },
+          {
+            "trial_id": "variant-27",
+            "sharpe_per_period": -0.042600263906
+          },
+          {
+            "trial_id": "variant-28",
+            "sharpe_per_period": 0.049623453246
+          },
+          {
+            "trial_id": "variant-29",
+            "sharpe_per_period": -0.028832696946
+          },
+          {
+            "trial_id": "variant-30",
+            "sharpe_per_period": -0.001688692124
+          },
+          {
+            "trial_id": "variant-31",
+            "sharpe_per_period": -0.162642667612
+          },
+          {
+            "trial_id": "variant-32",
+            "sharpe_per_period": -0.107837851089
+          },
+          {
+            "trial_id": "variant-33",
+            "sharpe_per_period": -0.043368109484
+          },
+          {
+            "trial_id": "variant-34",
+            "sharpe_per_period": -0.144157035664
+          },
+          {
+            "trial_id": "variant-35",
+            "sharpe_per_period": -0.0812176999
+          },
+          {
+            "trial_id": "variant-36",
+            "sharpe_per_period": -0.201798334176
+          },
+          {
+            "trial_id": "variant-37",
+            "sharpe_per_period": -0.06004670076
+          },
+          {
+            "trial_id": "variant-38",
+            "sharpe_per_period": -0.031715568196
+          },
+          {
+            "trial_id": "variant-39",
+            "sharpe_per_period": -0.098708762689
+          }
+        ],
+        "selected_trial_id": "variant-13",
+        "null_mean_sharpe_per_period": 0,
+        "notes": "Complete ledger of this generator's 40 candidate variants, measured NET on development execution-a. Selection used gross Sharpe. Effective independent count is unknown because variants share a market/baseline component. No other search is claimed."
+      }
+    }
+  ]
+}
