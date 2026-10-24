@@ -5,6 +5,7 @@ frontend, third-party test tool, credentials or platform-specific shell is neede
 """
 
 import argparse
+import difflib
 import hashlib
 import json
 import math
@@ -43,11 +44,18 @@ def verify_cohort_fixture(actual, frozen, *, platform_name=None):
         allowed.add(reviewed)
     actual_sha256 = digest(actual)
     if actual_sha256 not in allowed:
+        difference = "".join(difflib.unified_diff(
+            frozen.read_bytes().decode("utf-8").splitlines(keepends=True),
+            actual.read_bytes().decode("utf-8", errors="backslashreplace").splitlines(keepends=True),
+            fromfile="a/examples/cohort/example.json",
+            tofile="b/examples/cohort/example.json", n=0,
+        ))
         raise ValueError(
             "packaged cohort fixture is not reproducible: "
             f"platform={platform_name}; actual_sha256={actual_sha256}; "
             f"allowed_sha256={','.join(sorted(allowed))}. "
-            "Unrecognized output requires review; frozen data must not be replaced."
+            "Unrecognized output requires review; frozen data must not be replaced.\n"
+            f"Fixture diff (diagnostic only):\n{difference}"
         )
 
 
