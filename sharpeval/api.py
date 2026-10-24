@@ -1,4 +1,7 @@
-"""Dispatch schema 1 to its unchanged compatibility engine; schema 2 is opt-in."""
+"""Validate all input contracts; analyze preserves schema-1/2 comparisons.
+
+Use the separate rank_cohort API for schema-3 evidence ranking.
+"""
 
 from .analysis import analyze as analyze_v1
 from .experiments import analyze_experiment, validate_experiment
@@ -14,6 +17,9 @@ def analyze(document, **settings):
 
 
 def validate(document):
+    if isinstance(document, dict) and document.get("schema_version") == 3:
+        from .cohort import validate_cohort
+        return validate_cohort(document)
     if isinstance(document, dict) and document.get("schema_version") == 2:
         return validate_experiment(document)
     return validate_v1(document)

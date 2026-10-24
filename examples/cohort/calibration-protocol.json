@@ -1,0 +1,36 @@
+{
+  "protocol_version": "cohort-calibration-v1",
+  "method": "psr_holm_v1",
+  "generator": "sharpeval.cohort_fixtures.make_cohort_fixture",
+  "periods": 252,
+  "hurdle_sharpe_per_period": 0.05,
+  "alpha": 0.05,
+  "population_net_sharpes_mixed": [0.30, 0.15, 0.05, 0.05, 0.0, -0.10],
+  "agent_ids": ["strong-edge", "modest-edge", "boundary-a", "boundary-b", "zero-edge", "losing-independent"],
+  "sigma_per_period": 0.01,
+  "cost_fraction_per_period": 0.0001,
+  "replays": false,
+  "scenarios": [
+    {"id": "null-independent", "scenario": "null", "peer_correlation": 0.0, "seed_start": 710000, "worlds": 500, "supported": true},
+    {"id": "null-correlated", "scenario": "null", "peer_correlation": 0.6, "seed_start": 720000, "worlds": 500, "supported": true},
+    {"id": "mixed-correlated", "scenario": "mixed", "peer_correlation": 0.4, "seed_start": 730000, "worlds": 500, "supported": true},
+    {"id": "unsupported-serial", "scenario": "serial", "peer_correlation": 0.4, "seed_start": 740000, "worlds": 50, "supported": false},
+    {"id": "unsupported-reused", "scenario": "reused", "peer_correlation": 0.4, "seed_start": 750000, "worlds": 50, "supported": false}
+  ],
+  "outcomes": [
+    "Familywise error: fraction of worlds with ANY qualification among agents whose population net Sharpe is at or below the common hurdle; denominator is every planned world.",
+    "Per-agent unconditional qualification and eligibility fractions with Wilson 95% Monte Carlo intervals; all abstentions remain in the denominator.",
+    "Per-agent rank histogram including an unscored category, top-rank frequency and strong-edge versus modest-edge rank recovery with coverage.",
+    "Every world seed, agent score, rank, p-value, qualification, eligibility and abstention reason; no seed exclusions or rerolls.",
+    "Unsupported stress scenarios reported separately as abstention checks, never evidence of valid p-values under dependence or reuse."
+  ],
+  "notes": [
+    "Frozen before this calibration was executed. One fixed demonstration fixture had been smoke-tested during implementation; none of these world seeds had been evaluated.",
+    "Original synthetic Gaussian generator, independently specified. Known effects are stipulated; this is not market data, actual AI-agent trading, adoption, prospective evidence or proof of real skill.",
+    "Sessions are iid for supported cases; common Gaussian shocks correlate agents. The losing agent in mixed worlds is independent of peers. Correlation is not a score bonus.",
+    "Hypothetical gross returns add the known fee, which the evaluator subtracts once. Risk/positive-wealth and dependence-screen gates remain active; qualification probabilities include their effects.",
+    "Normal simple returns are a mathematical teaching model with unbounded support. Any out-of-contract generated path must stop and be reported, never resampled.",
+    "The common 0.05 per-period hurdle, 252 periods and 5% alpha are illustrative protocol choices, not universal economic cutoffs. Monte Carlo intervals quantify simulation uncertainty only.",
+    "No outcome-based tuning of generator, score, seeds, scenarios, costs, risk limits or reporting. Any correctness repair must be recorded and all worlds rerun."
+  ]
+}

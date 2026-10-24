@@ -1,8 +1,9 @@
-"""Local, descriptive comparisons of versioned trading-agent returns."""
+"""Local conditional cohort rankings and versioned trading-agent comparisons."""
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 from .api import analyze, validate
 from .validation import InputError, load_input
+from .cohort import rank_cohort
 
-__all__ = ["analyze", "InputError", "load_input", "validate", "__version__"]
+__all__ = ["analyze", "rank_cohort", "InputError", "load_input", "validate", "__version__"]

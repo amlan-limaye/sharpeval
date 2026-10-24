@@ -25,6 +25,14 @@ extraction, with `PYTHONPATH`/`PYTHONHOME` removed. The installed module path is
 checked, preventing an accidental source-tree import from masking a broken wheel.
 Schema-1 CSV, schema-2 CSV, explicit failed/missing runs and seeded report
 reproducibility are exercised. Wheel/sdist reports must match within that runtime.
+Schema 3 additionally checks generated fixture bytes, validation, rank JSON/HTML,
+missing-primary family slots and all 1,600 frozen calibration worlds with each
+clean installed package. The generated calibration is compared with the packaged
+record after removing Python-version metadata. Structure, seeds, counts, statuses,
+ranks and qualification decisions must match exactly; floats permit only roundoff
+(`rel_tol=1e-12`, `abs_tol=1e-14`) across Python/platform math libraries. Wheel and
+sdist output hashes must still match exactly within each runtime. Larger differences
+fail the check and require investigation, not an outcome-driven tolerance change.
 
 To run the same checks locally with an existing supported Python interpreter:
 

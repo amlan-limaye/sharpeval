@@ -14,6 +14,9 @@ from .experiment_fixtures import EXPERIMENT_SCENARIOS, make_experiment_fixture
 from .fixtures import SCENARIOS, make_fixture
 from .report import render_html
 from .validation import InputError, align, load_input
+from .cohort import rank_cohort
+from .cohort_fixtures import make_cohort_fixture
+from .cohort_report import render_cohort_html
 
 
 def write_files(files, force=False):
@@ -38,9 +41,18 @@ def write_files(files, force=False):
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(prog="sharpeval", description="Compare local version-labelled return histories and fixed portfolio additions. No skill certification.")
+    parser = argparse.ArgumentParser(prog="sharpeval", description="Rank frozen cohorts with conditional evidence, or compare local agent versions and fixed portfolio additions. No skill certification.")
     parser.add_argument("--version", action="version", version=__version__)
     commands = parser.add_subparsers(dest="command", required=True)
+    cohort = commands.add_parser("fixture-cohort", help="generate a controlled synthetic ranking input (schema 3)")
+    cohort.add_argument("--periods", type=int, default=252)
+    cohort.add_argument("--seed", type=int, default=20261022)
+    cohort.add_argument("--out", type=Path, required=True)
+    cohort.add_argument("--force", action="store_true")
+    rank = commands.add_parser("rank", help="rank a frozen cohort using conditional PSR and Holm; no skill probability")
+    rank.add_argument("input", type=Path)
+    rank.add_argument("--output", type=Path, required=True)
+    rank.add_argument("--force", action="store_true")
     fixture = commands.add_parser("fixture", help="generate a reproducible, clearly synthetic input")
     fixture.add_argument("--scenario", choices=SCENARIOS, default="complementary")
     fixture.add_argument("--periods", type=int, default=252)
@@ -76,6 +88,11 @@ def build_parser():
 def main(argv=None):
     args = build_parser().parse_args(argv)
     try:
+        if args.command == "fixture-cohort":
+            document = make_cohort_fixture(args.periods, args.seed)
+            write_files({args.out: json.dumps(document, indent=2, ensure_ascii=False, allow_nan=False) + "\n"}, args.force)
+            print(f"SYNTHETIC cohort written: {args.out}; no real-world skill claim.")
+            return 0
         if args.command in ("fixture", "fixture-runs"):
             document = (make_fixture if args.command == "fixture" else make_experiment_fixture)(args.scenario, args.periods, args.seed)
             write_files({args.out: json.dumps(document, indent=2, ensure_ascii=False, allow_nan=False) + "\n"}, args.force)
@@ -102,8 +119,24 @@ def main(argv=None):
                 print("SYNTHETIC: this example is not evidence of real-world alpha.")
             return 0
         document = load_input(args.input)
+        if args.command == "rank":
+            json_path, html_path = args.output / "report.json", args.output / "report.html"
+            if args.input.resolve() in (json_path.resolve(), html_path.resolve()):
+                raise InputError("output would overwrite the input")
+            result = rank_cohort(document)
+            write_files({json_path: json.dumps(result, indent=2, ensure_ascii=False, allow_nan=False) + "\n",
+                         html_path: render_cohort_html(result)}, args.force)
+            print(f"Cohort: {result['family_size']} registered agents; {result['coverage']['scored_agents']} scored; all family slots retained.")
+            print("Score = 100*(1-Holm p), conditional on declared assumptions; not a probability of skill.")
+            print(f"JSON: {json_path.resolve()}\nHTML: {html_path.resolve()}")
+            return 0
         if args.command == "validate":
             data = validate(document)
+            if document["schema_version"] == 3:
+                if args.alignment != "strict":
+                    raise InputError("schema 3 requires strict alignment")
+                print(f"Valid schema-3 cohort: {len(data['agents'])} registered agents; {len(data['runs'])} planned cells; no scoring implied.")
+                return 0
             if document["schema_version"] == 2:
                 if args.alignment != "strict":
                     raise InputError("schema 2 requires strict alignment")
@@ -116,6 +149,8 @@ def main(argv=None):
                 raise InputError("compared versions have incompatible source types")
             print(f"Valid: {len(data.histories)} histories; {info['periods']} common periods; alignment={args.alignment}.")
             return 0
+        if document.get("schema_version") == 3:
+            raise InputError("use rank for schema 3; compare preserves the schema-1/2 contracts")
         json_path, html_path = args.output / "report.json", args.output / "report.html"
         if args.input.resolve() in (json_path.resolve(), html_path.resolve()):
             raise InputError("output would overwrite the input")

@@ -1,12 +1,14 @@
 # SharpeVal
 
-A small, offline Python tool for developers evaluating trading-agent changes:
+A small, offline Python tool for developers evaluating trading agents:
 
-1. What changed between two versions of the same trading agent, on the same periods and after declared costs?
-2. What changes when the new version joins an existing portfolio under fixed, declared weights?
+1. Which agents show the strongest **conditional evidence above a common, predeclared Sharpe hurdle**, after accounting for selection among the registered cohort?
+2. What changed between two versions on the same periods and after declared costs, including fixed-weight portfolio contribution?
 3. How much do results vary across executions, and how does a declared strategy search affect a named run's Sharpe evidence?
 
-The output separates performance, risk, exposure, uncertainty and portfolio contribution. There is no opaque score, leaderboard, eligibility gate or certification of skill. Positive returns and low correlations do not establish predictive ability.
+The new `rank` command gives an inspectable evidence score: **100 × (1 − Holm-adjusted one-sided PSR p-value)**. It uses one frozen execution per agent on one common untouched evaluation window, with explicit assumptions, costs and risk limits. Missing evidence stays unscored. The score is not a probability of skill, pairwise superiority or proof of repeatable future performance. A lucky winner can still pass, and a genuine but modest effect can remain unconvincing.
+
+Consistency (Sharpe), efficiency (return per measured exposure) and independence (correlation to a frozen reference) are shown separately. Only the common-hurdle evidence determines rank. This is **Swing-inspired and independently specified**, not a reproduction of unpublished Swing formulas, weights or windows. Low correlation never improves the score.
 
 The runtime uses only Python's standard library. No AI, subscriptions, network calls, brokerage integrations, credentials or market-data downloads are required. All included data are reproducible **synthetic teaching fixtures**, not market observations or evidence of real-world alpha.
 
@@ -21,9 +23,9 @@ cd sharpeval
 python3 -m venv .venv
 .venv/bin/python -m pip install .
 .venv/bin/sharpeval --version
-.venv/bin/sharpeval validate examples/complementary.json
-.venv/bin/sharpeval compare examples/complementary.json \
-  --output output/demo --block-length 8 --resamples 1000 --seed 42
+.venv/bin/sharpeval fixture-cohort --out output/cohort.json
+.venv/bin/sharpeval validate output/cohort.json
+.venv/bin/sharpeval rank output/cohort.json --output output/cohort-report
 ```
 
 If you extracted a release, skip the clone and enter the extracted directory.
@@ -40,16 +42,36 @@ optional for this route; no build backend, package installation or downloads are
 needed. For example:
 
 ```sh
-python3 -m sharpeval validate examples/minimal.json
-python3 -m sharpeval compare examples/minimal.json \
-  --output output/minimal --resamples 200 --seed 42
+python3 -m sharpeval fixture-cohort --out output/cohort.json
+python3 -m sharpeval validate output/cohort.json
+python3 -m sharpeval rank output/cohort.json --output output/cohort-report
 ```
 
-Read `output/demo/report.html` locally and use `output/demo/report.json` for
+Read `output/cohort-report/report.html` locally and use `output/cohort-report/report.json` for
 programmatic access. The HTML has no JavaScript, remote assets or telemetry.
 Use `--force` to repeat an output path. Invalid inputs exit 2 with a reason;
 a completed report with insufficient evidence exits 0 and carries explicit
 statuses. Check those statuses before interpreting numbers.
+
+The fixture contains six agents with known synthetic effects, two declared
+execution seeds and one fixed primary seed. Replays do not add market history.
+The [cohort guide](docs/cohort-ranking.md) specifies the score, JSON input contract,
+own-data workflow and refusal rules. Schema-3 cohort import is JSON only; the
+existing CSV importer remains available for schema-1/2 comparisons.
+
+The [controlled calibration](docs/cohort-calibration.md) runs every one of 1,600
+predeclared worlds, including all-null cohorts at the hurdle, correlated agents,
+mixed known effects and unsupported stress cases. It reports familywise false
+qualification, power, rank stability and Monte Carlo uncertainty. Reproduce it
+offline from a checkout or source release:
+
+```sh
+python3 -m tools.calibrate_cohort \
+  --protocol examples/cohort/calibration-protocol.json --output output/calibration
+```
+
+These tests show how the evaluator behaves under known synthetic assumptions.
+They do not establish real-agent skill, adoption or universal statistical calibration.
 
 For repeated-run and selection diagnostics:
 
@@ -155,9 +177,9 @@ For schema 2, the same API returns `result["runs"]`, `result["pairs"]`, `result[
 
 Read the [original methodology](docs/methodology.md) and [v0.2 methodology and limits](docs/methodology-v02.md). PSR/DSR values are conditional approximate normal-tail areas, **not probabilities that an agent is truly skilled**, future-profit odds, or a paired test of version improvement. They do not correct the bootstrap intervals or all forms of selection bias. Input provenance, search completeness, independence and stationarity are not independently established by this tool.
 
-Schema 1 retains the exact v0.1 compatibility calculation and report, including `selection_adjustment.status="not_implemented"` and its calculation-profile version `0.1.0`. The schema-2 report retains calculation-profile version `0.2.0`. The installed package/CLI is `0.3.0`; the CSV importer supports both schemas without changing their statistical interpretation. Record `sharpeval --version` alongside report files when tracking the package version.
+Schema 1 retains the exact v0.1 compatibility calculation and report, including `selection_adjustment.status="not_implemented"` and its calculation-profile version `0.1.0`. The schema-2 report retains calculation-profile version `0.2.0`. The installed package/CLI is `0.4.0`; schema 3 uses the new `psr_holm_v1` profile. The CSV importer supports schemas 1 and 2 without changing their statistical interpretation. Record `sharpeval --version` alongside report files when tracking the package version.
 
-Excluded: execution, market downloads, strategy search, calendar inference, causal attribution, varying cash rates, currency conversion, short/leverage portfolio weights, recapitalization, cross-window inference, seed-level confidence intervals, and serial-correlation-adjusted PSR/DSR. There are no prop challenges, profit targets, funding rules or qualification stages.
+Excluded: execution, market downloads, strategy search, calendar inference, causal attribution, varying cash rates, currency conversion, short/leverage portfolio weights, recapitalization, cross-window inference, seed-level confidence intervals, and serial-correlation-adjusted PSR/DSR. Conditional statistical qualification in schema 3 is not a prop challenge, funding decision or skill certification.
 
 ## Prior work and reuse
 
@@ -179,4 +201,4 @@ checkout. The hosted matrix targets Linux/Python 3.11 and 3.13 plus Windows/Pyth
 
 Tests include hand-calculated wealth/variance/drawdown/weights, an independent bootstrap percentile oracle, published DSR examples and an independent normal-density quadrature oracle, duplicate seeds, overlapping windows, missing losers, unknown trial inputs, correlated and nonnormal streams, cost accounting, bankruptcy, strict integrity, and end-to-end CLI/report reproducibility. See [v0.2 validation evidence](docs/validation-v02.md) and the [preserved v0.1 record](docs/validation.md). The CSV workflow adds hand-calculated gross/net examples, missing-session and malformed-input cases, overwrite protection and deterministic CLI checks. See [the changelog](CHANGELOG.md). Browser rendering was not verified; HTML structure and numeric content were checked locally.
 
-The next useful step is a small predeclared held-out evaluation: freeze two agent versions, the cost model, benchmark, weights, calendar and bootstrap settings before collecting fresh data. Record all attempted versions and separate execution runs. More statistics cannot substitute for better experimental records.
+For a real cohort, freeze the agents, primary execution, calendar, common Sharpe hurdle, cost accounting, risk constraints and assumptions before evaluating fresh data. Preserve every registered candidate and execution, including failures. The tool fingerprints declarations; it cannot independently prove predeclaration or an untouched holdout. More statistics cannot substitute for better experimental records.

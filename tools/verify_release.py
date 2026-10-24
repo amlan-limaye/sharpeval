@@ -23,6 +23,19 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def equivalent_calibration(actual, expected):
+    """Exact structure/status/counts; allow only roundoff across Python/platforms."""
+    if type(actual) is not type(expected):
+        return False
+    if isinstance(actual, dict):
+        return actual.keys() == expected.keys() and all(equivalent_calibration(actual[k], expected[k]) for k in actual)
+    if isinstance(actual, list):
+        return len(actual) == len(expected) and all(equivalent_calibration(a, e) for a, e in zip(actual, expected))
+    if isinstance(actual, float):
+        return math.isclose(actual, expected, rel_tol=1e-12, abs_tol=1e-14)
+    return actual == expected
+
+
 def extract_source(archive, destination):
     # Avoid version-dependent tar extraction defaults, links and path traversal.
     with tarfile.open(archive) as tar:
@@ -72,7 +85,10 @@ def verify(artifacts):
         if project["dependencies"]:
             raise ValueError("unexpected runtime dependencies")
         for name in ("docs/csv-experiments.md", "docs/case-study.md", "examples/repeated-csv/generate.py",
-                     "examples/repeated-csv/returns.csv", "examples/repeated-csv/metadata.json", "tests/test_csv_experiments.py"):
+                     "examples/repeated-csv/returns.csv", "examples/repeated-csv/metadata.json", "tests/test_csv_experiments.py",
+                     "docs/cohort-ranking.md", "docs/cohort-calibration.md", "examples/cohort/example.json",
+                     "examples/cohort/calibration-protocol.json", "examples/cohort/calibration.json",
+                     "examples/cohort/summary.md", "tools/calibrate_cohort.py", "tests/test_cohort.py"):
             if not (source / name).is_file():
                 raise ValueError(f"source distribution omitted {name}")
         with zipfile.ZipFile(wheels[0]) as wheel:
@@ -136,6 +152,45 @@ def verify(artifacts):
                         raise ValueError("explicit failure/missing records were lost")
                     if report["windows"][1]["aggregate"]["status"] != "unavailable":
                         raise ValueError("incomplete window unexpectedly received an aggregate")
+            cohort_input = work / "cohort.json"
+            run([cli, "fixture-cohort", "--out", cohort_input])
+            if cohort_input.read_bytes() != (source / "examples/cohort/example.json").read_bytes():
+                raise ValueError("packaged cohort fixture is not reproducible")
+            run([cli, "validate", cohort_input])
+            cohort_dir = work / "cohort-report"
+            command = [cli, "rank", cohort_input, "--output", cohort_dir]
+            run(command)
+            first = {name: digest(cohort_dir / name) for name in ("report.json", "report.html")}
+            run([*command, "--force"])
+            if first != {name: digest(cohort_dir / name) for name in first}:
+                raise ValueError("cohort reports are not reproducible")
+            hashes["cohort"] = first
+            report = json.loads((cohort_dir / "report.json").read_text(encoding="utf-8"))
+            agents = {a["agent_id"]: a for a in report["agents"]}
+            if report["family_size"] != 6 or report["coverage"]["planned_runs"] != 12 or not agents["strong-edge"]["evidence_qualified"]:
+                raise ValueError("cohort identity or conditional evidence contract changed")
+            if agents["losing-independent"]["score"] is not None:
+                raise ValueError("losing fixture unexpectedly received a score")
+            incomplete = json.loads(cohort_input.read_text(encoding="utf-8"))
+            incomplete["runs"] = [r for r in incomplete["runs"] if r["run_id"] != "strong-edge-primary"]
+            missing_input = work / "cohort-missing.json"
+            missing_input.write_text(json.dumps(incomplete) + "\n", encoding="utf-8")
+            run([cli, "rank", missing_input, "--output", work / "cohort-missing-report"])
+            missing_report = json.loads((work / "cohort-missing-report/report.json").read_text(encoding="utf-8"))
+            missing = next(a for a in missing_report["agents"] if a["agent_id"] == "strong-edge")
+            if missing_report["family_size"] != 6 or missing["score"] is not None or missing["family_p_used"] != 1:
+                raise ValueError("a missing primary execution shrank the family or used a replay")
+            # Run every frozen world with the installed package, not the checkout.
+            calibration_dir = work / "calibration"
+            run([python, source / "tools/calibrate_cohort.py", "--protocol", source / "examples/cohort/calibration-protocol.json",
+                 "--output", calibration_dir])
+            actual = json.loads((calibration_dir / "calibration.json").read_text(encoding="utf-8"))
+            expected = json.loads((source / "examples/cohort/calibration.json").read_text(encoding="utf-8"))
+            # Runtime metadata is expected to differ across the hosted matrix.
+            actual.pop("python"); expected.pop("python")
+            if not equivalent_calibration(actual, expected):
+                raise ValueError("full installed-package calibration differs from the frozen record")
+            hashes["calibration"] = {"calibration.json": digest(calibration_dir / "calibration.json")}
             if shared_hashes is not None and hashes != shared_hashes:
                 raise ValueError("wheel and source-distribution reports differ")
             shared_hashes = hashes
@@ -153,7 +208,7 @@ def main():
     result = verify(args.artifacts.resolve())
     args.evidence.parent.mkdir(parents=True, exist_ok=True)
     args.evidence.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-    print("Passed: wheel and sdist clean installs outside checkout; schema-1, schema-2 and incomplete CSV examples; reproducible JSON/HTML. No package index used.")
+    print("Passed: wheel and sdist clean installs outside checkout; schema-1/2 CSV, schema-3 ranking/missing-primary cases and every frozen calibration world; reproducible JSON/HTML. No package index used.")
 
 
 if __name__ == "__main__":

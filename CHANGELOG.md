@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.4.0
+
+- Add schema-3 `rank`, `fixture-cohort` and public `rank_cohort` for a frozen
+  multi-agent cohort. Rank one primary execution on one common evaluation window
+  by `100 * (1 - Holm-adjusted one-sided PSR p)`, under explicit supported
+  assumptions and a common positive per-period Sharpe hurdle chosen by the user.
+- Retain every registered candidate in the correction family; failed, missing and
+  ineligible entries use p = 1 for correction and keep null scores. Equal scores
+  share rank. Preserve planned replay failures without pooling market history.
+- Validate expected timestamps, versions, decimal units, known cost accounting,
+  measured peak exposure and common risk limits. Withhold scores for unsupported
+  assumptions, reused holdouts, dependence flags, invalid moments or unmet limits.
+- Display raw PSR, effect size and reasons beside separate exposure efficiency,
+  frozen-reference correlation and discovery-context DSR. No arbitrary weighted
+  composite, posterior skill probability, official Swing replication or claim of
+  repeatability. Schema-1/2 statistical calculations and reports are unchanged.
+- Add own-data JSON instructions, offline HTML/JSON reports, focused tests and a
+  fixed 1,600-world synthetic calibration reporting all seeds, familywise false
+  qualifications, power, rank stability and Monte Carlo intervals. Unsupported
+  stress cases measure abstention only. No real trading edge or adoption claim.
+- Extend clean wheel/source installation checks to the cohort workflow. No new
+  runtime dependency, service, credentials or network requirement.
+
+This release starts from published v0.3.0. The separately held ECB v0.3.1
+candidate and its artifacts are preserved outside this package, not published or
+silently folded into this release.
+
 ## 0.3.0
 
 - Extend `import-csv` to schema 2 with explicit run/window/seed/version matching,
