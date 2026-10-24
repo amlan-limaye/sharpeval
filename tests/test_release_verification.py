@@ -33,19 +33,32 @@ class CohortFixtureReleaseGateTests(unittest.TestCase):
             with self.subTest(platform=name):
                 verify_cohort_fixture(self.actual, self.frozen, platform_name=name)
 
-    @unittest.skipUnless(sys.platform in ("darwin", "linux"), "platform fingerprint has not been reviewed")
+    @unittest.skipUnless(sys.platform in ("darwin", "linux", "win32"), "platform fingerprint has not been reviewed")
     def test_unchanged_generator_matches_reviewed_platform_output(self):
         first = encode(make_cohort_fixture())
         self.assertEqual(first, encode(make_cohort_fixture()))
         self.actual.write_bytes(first)
         verify_cohort_fixture(self.actual, self.frozen)
 
-    @unittest.skipUnless(sys.platform == "linux", "requires the reviewed Linux math output")
-    def test_linux_exception_is_not_accepted_on_unreviewed_platform(self):
+    @unittest.skipUnless(sys.platform in ("linux", "win32"), "requires a reviewed alternate math output")
+    def test_platform_exception_is_not_accepted_on_other_platforms(self):
         self.actual.write_bytes(encode(make_cohort_fixture()))
         self.assertNotEqual(self.actual.read_bytes(), self.frozen.read_bytes())
-        with self.assertRaisesRegex(ValueError, "platform=win32"):
-            verify_cohort_fixture(self.actual, self.frozen, platform_name="win32")
+        other_platform = "win32" if sys.platform == "linux" else "linux"
+        for name in ("darwin", other_platform, "unreviewed-platform"):
+            with self.subTest(platform=name), self.assertRaisesRegex(ValueError, "platform=" + name):
+                verify_cohort_fixture(self.actual, self.frozen, platform_name=name)
+
+    @unittest.skipUnless(sys.platform in ("darwin", "linux", "win32"), "platform fingerprint has not been reviewed")
+    def test_one_ulp_drift_from_reviewed_platform_output_is_rejected(self):
+        document = make_cohort_fixture()
+        self.actual.write_bytes(encode(document))
+        verify_cohort_fixture(self.actual, self.frozen)
+        row = document["runs"][0]["observations"][0]
+        row["return"] = math.nextafter(row["return"], math.inf)
+        self.actual.write_bytes(encode(document))
+        with self.assertRaises(ValueError):
+            verify_cohort_fixture(self.actual, self.frozen)
 
     def test_even_one_ulp_of_unreviewed_numeric_drift_is_rejected(self):
         document = json.loads(self.frozen.read_bytes())
