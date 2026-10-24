@@ -23,6 +23,34 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+# Preserve the original frozen fixture. These are exact reviewed outputs of the
+# unchanged generator, not a numeric tolerance or permission to refresh data.
+FROZEN_COHORT_FIXTURE_SHA256 = "bf9d95e0f94ac118bcaebd0eaa70cfeaf59ecf04dc44537fc0510c2b547a02dd"
+COHORT_FIXTURE_PLATFORM_SHA256 = {
+    # Reviewed Linux/glibc output: Python 3.11.17 and 3.13.7 on x86_64,
+    # and Python 3.13.17 on aarch64. Only sin/cos roundoff differs from macOS.
+    "linux": "7daef8a468188610f066e39aa947d452a181f9db5b6a0076b3c1f86349c63c12",
+}
+
+
+def verify_cohort_fixture(actual, frozen, *, platform_name=None):
+    if digest(frozen) != FROZEN_COHORT_FIXTURE_SHA256:
+        raise ValueError("packaged cohort fixture changed from the frozen record")
+    platform_name = sys.platform if platform_name is None else platform_name
+    allowed = {FROZEN_COHORT_FIXTURE_SHA256}
+    reviewed = COHORT_FIXTURE_PLATFORM_SHA256.get(platform_name)
+    if reviewed is not None:
+        allowed.add(reviewed)
+    actual_sha256 = digest(actual)
+    if actual_sha256 not in allowed:
+        raise ValueError(
+            "packaged cohort fixture is not reproducible: "
+            f"platform={platform_name}; actual_sha256={actual_sha256}; "
+            f"allowed_sha256={','.join(sorted(allowed))}. "
+            "Unrecognized output requires review; frozen data must not be replaced."
+        )
+
+
 def equivalent_calibration(actual, expected):
     """Exact structure/status/counts; allow only roundoff across Python/platforms."""
     if type(actual) is not type(expected):
@@ -154,8 +182,7 @@ def verify(artifacts):
                         raise ValueError("incomplete window unexpectedly received an aggregate")
             cohort_input = work / "cohort.json"
             run([cli, "fixture-cohort", "--out", cohort_input])
-            if cohort_input.read_bytes() != (source / "examples/cohort/example.json").read_bytes():
-                raise ValueError("packaged cohort fixture is not reproducible")
+            verify_cohort_fixture(cohort_input, source / "examples/cohort/example.json")
             run([cli, "validate", cohort_input])
             cohort_dir = work / "cohort-report"
             command = [cli, "rank", cohort_input, "--output", cohort_dir]
