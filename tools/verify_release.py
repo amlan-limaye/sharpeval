@@ -31,6 +31,9 @@ COHORT_FIXTURE_PLATFORM_SHA256 = {
     # Reviewed Linux/glibc output: Python 3.11.17 and 3.13.7 on x86_64,
     # and Python 3.13.17 on aarch64. Only sin/cos roundoff differs from macOS.
     "linux": "7daef8a468188610f066e39aa947d452a181f9db5b6a0076b3c1f86349c63c12",
+    # Reviewed Windows/Python 3.13.16 output, hosted run 40071467665:
+    # 158 roundoff-only leaves (max 6.94e-18), with identical ranking decisions.
+    "win32": "33d8a596279716228515035e15d9d33b05950c566a5fc386414757216ccb9849",
 }
 
 
