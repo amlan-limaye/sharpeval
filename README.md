@@ -59,6 +59,14 @@ The [cohort guide](docs/cohort-ranking.md) specifies the score, JSON input contr
 own-data workflow and refusal rules. Schema-3 cohort import is JSON only; the
 existing CSV importer remains available for schema-1/2 comparisons.
 
+Choose the command for your JSON input:
+
+| Command | Supported schemas | Result |
+| --- | --- | --- |
+| `compare` | 1 and 2 | Version-comparison reports, including declared portfolio and repeated-run diagnostics. |
+| `rank` | 3 | Cohort evidence-ranking reports. Use this instead of `compare` for a cohort. |
+| `validate` | 1, 2 and 3 | A validation summary only; it does not write reports or score agents. |
+
 The [controlled calibration](docs/cohort-calibration.md) runs every one of 1,600
 predeclared worlds, including all-null cohorts at the hurdle, correlated agents,
 mixed known effects and unsupported stress cases. It reports familywise false
