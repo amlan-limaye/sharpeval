@@ -156,6 +156,8 @@ No frequency conversion, automatic annualization, missing-return filling or time
 
 ## Reuse the analysis core
 
+Use `analyze` for schema-1 and schema-2 comparison documents:
+
 ```python
 from sharpeval import analyze, load_input
 from sharpeval.report import render_html
@@ -170,6 +172,17 @@ html = render_html(result)
 `analyze` validates the document and returns ordinary JSON-compatible objects. It performs no I/O, uses a local random generator and does not modify global random state. Identical inputs/settings on the same supported runtime produce identical report bytes; each report records a canonical input hash, calculation-profile version, Python version and resampling settings. Fixture randomness and bootstrap randomness use separate explicit seeds.
 
 For schema 2, the same API returns `result["runs"]`, `result["pairs"]`, `result["windows"]`, `result["coverage"]` and `result["selection"]`. Each complete window's conditional mean-execution comparison is under `result["windows"][i]["aggregate"]["comparison"]`. Unavailable aggregates contain `comparison: null` and reasons; check statuses before reading numbers.
+
+For schema 3, use `rank_cohort`, which validates the cohort internally, and its dedicated HTML renderer:
+
+```python
+from sharpeval import load_input, rank_cohort
+from sharpeval.cohort_report import render_cohort_html
+
+document = load_input("examples/cohort/example.json")
+result = rank_cohort(document)
+html = render_cohort_html(result)
+```
 
 ## What v0.2 covers
 
