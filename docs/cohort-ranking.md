@@ -138,6 +138,13 @@ declarations with your actual records; never merely change `synthetic` to false.
 All property names are strict; unknown or missing fields are rejected. The package
 does not contain a backtester, execute trades or independently audit exposure/costs.
 
+`rank` writes `report.json` and `report.html` in the output directory. It checks
+both paths before writing: if either output file exists, the command fails without
+writing the other unless `--force` is supplied. `--force` replaces existing report
+files, so use a fresh directory to preserve an earlier report. The input cannot be
+either output file, and symlinks and directories are refused as output files, even
+with `--force`.
+
 ## Input field reference
 
 Top-level fields are `schema_version: 3`, `cohort_id`, `title`, `synthetic` (boolean),

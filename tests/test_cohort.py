@@ -354,6 +354,19 @@ class CohortCLITests(unittest.TestCase):
             self.assertEqual(self.cli("rank", protected, "--output", dest, "--force").returncode, 2)
             self.assertEqual(protected.read_bytes(), source.read_bytes())
 
+    def test_existing_html_prevents_partial_rank_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            dest = Path(directory) / "report"
+            dest.mkdir()
+            html = dest / "report.html"
+            html.write_bytes(b"existing report")
+            result = self.cli("rank", ROOT / "examples/cohort/example.json", "--output", dest)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("output exists:", result.stderr)
+            self.assertIn("--force", result.stderr)
+            self.assertEqual(html.read_bytes(), b"existing report")
+            self.assertFalse((dest / "report.json").exists())
+
     def test_html_escapes_data_and_has_offline_balanced_structure(self):
         d = make_cohort_fixture()
         d["title"] = '<script>alert("title")</script>'
